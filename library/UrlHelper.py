@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 
 
-def Urlpattern(*args):
+def urlpattern(*args):
     urls = []
     for arg in args:
         if isinstance(arg,Url):

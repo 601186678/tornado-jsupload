@@ -29,11 +29,10 @@ class Upload_service:
         return {'state': 'success', 'data': ''}
 
     def uploadEnd(self, no):
+
         config.upload_success.add(no)
         if len(config.upload_success) >= 5:
-
-            self.mergeFile()
-            return {'state': 'success', 'data': 'all_success'}
+            return self.mergeFile()
         else:
             return {'state': 'success', 'data': 'wait'}
 
@@ -60,6 +59,7 @@ class Upload_service:
             temp_path = os.path.join(myFunc.getUploadPath(), '%s_%s' % (temp_file_name, i))
             if os.path.exists(temp_path):
                 os.remove(temp_path)
+        return {'state': 'all_success', 'data': '%s%s' % (temp_file_name, ext)}
 
 
 

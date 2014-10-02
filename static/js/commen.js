@@ -151,10 +151,9 @@ angular.module('upload', [])
 
                     console.log(data);
 
-                    if (data['state'] == 'success' && data['data'] == 'all_success') {
+                    if (data['state'] == 'all_success') {
 
 
-                        alert('success');
                         $scope.threads = [];
                         for (var i = 0; i < 5; i++) {
                             var thread = {};
@@ -167,6 +166,9 @@ angular.module('upload', [])
                         $scope.file = undefined;
 
                         $scope.current_file = undefined;
+
+
+                        $scope.download_filename = data['data']
 
                         $scope.$apply();
 
