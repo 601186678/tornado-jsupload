@@ -43,4 +43,34 @@ class Upload_service:
             return {'state': 'success', 'data': 'wait'}
 
     def mergeFile(self):
-        print('ok')
+        temp_file_name = self.handler.get_secure_cookie("temp_file_name")
+        ext = self.handler.get_secure_cookie("fileext")
+        newPath = os.path.join(myFunc.getUploadPath(), '%s%s' % (temp_file_name, ext))
+
+        if os.path.exists(newPath):
+            os.remove(newPath)
+        newFile = open(newPath, 'ab')
+        for i in range(0, 5):
+
+            temp_path = os.path.join(myFunc.getUploadPath(), '%s_%s' % (temp_file_name, i))
+            temp_file = open(temp_path, 'rb')
+            while True:
+                buff = temp_file.read(1024)
+                if not buff:
+                    break
+                newFile.write(buff)
+            temp_file.close()
+        newFile.close()
+        for i in range(0, 5):
+            temp_path = os.path.join(myFunc.getUploadPath(), '%s_%s' % (temp_file_name, i))
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
+
+
+
+
+
+
+
+
