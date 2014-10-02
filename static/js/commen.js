@@ -55,7 +55,9 @@ angular.module('upload', [])
         var readBlob = function (i, $scope) {
             var blob;
 
-            var start = $scope.threads[i]['fileLoaded'] + $scope.fileSize * i / 5;
+
+            var start = $scope.threads[i]['fileLoaded'] + $scope.threads[i]['fileSize'] * i / 5;
+
             if ($scope.file.webkitSlice) {
                 blob = $scope.file.webkitSlice(start, start + $scope.block + 1);
             } else if ($scope.file.mozSlice) {
@@ -71,7 +73,10 @@ angular.module('upload', [])
 
 
         var upload_blob = function (e, i, $scope) {
+
+
             $.ajax({
+
 
                 url: '/upload/blob',
                 type: 'post',
@@ -80,7 +85,13 @@ angular.module('upload', [])
                     no: i
                 },
                 success: function (data) {
-                    readBlob(i, $scope);
+
+                    if (data['state'] == 'success') {
+
+                        readBlob(i, $scope);
+                    }
+                }, error: function () {
+                    upload_blob(e, i, $scope);
                 }
             });
         };
@@ -92,15 +103,22 @@ angular.module('upload', [])
 
                 url: '/upload/start',
                 type: 'post',
+                dataType: 'json',
                 data: {filename: $scope.file.name},
                 success: function (data) {
 
-                    for (var i = 0; i < 5; i++) {
-                        $scope.threads[i]['fileReader'] = new FileReader();
-                        $scope.threads[i]['fileReader'].onload = readSuccess;
-                        $scope.threads[i]['fileReader'].no = i;
-                        Concurrent.Thread.create(readBlob, i, $scope);
+
+                    if (data['state'] == 'success') {
+                        for (var i = 0; i < 5; i++) {
+                            $scope.threads[i]['fileReader'] = new FileReader();
+                            $scope.threads[i]['fileReader'].onload = readSuccess;
+                            $scope.threads[i]['fileReader'].no = i;
+                            Concurrent.Thread.create(readBlob, i, $scope);
+                        }
                     }
+                },
+                error: function () {
+                    upload_start();
                 }
             });
 
@@ -108,17 +126,41 @@ angular.module('upload', [])
         };
 
 
+        var blobUploadEnd = function (no) {
+
+            $.ajax({
+                url: '/upload/end',
+                type: 'post',
+                data: {no: no},
+                success: function (data) {
+
+
+                    console.log(data);
+                    if (data['state'] == 'success' && data['data'] == 'all_success') {
+                        alert(data['data']);
+                    }
+                }
+
+            })
+        };
+
+
         var readSuccess = function (e) {
 
             var index = e.target.no;
-            $scope.threads[index]['fileLoaded'] += e.total;
 
-
-//            console.log($scope.threads[index]['fileLoaded']);
-            $scope.threads[index]['percent'] = $scope.threads[index]['fileLoaded'] / $scope.threads[index]['fileSize'];
             if (e.target.readyState == FileReader.DONE) {
-                if ($scope.threads[index]['percent'] < 1) {
+                if ($scope.threads[index]['percent'] < 100) {
+
+
+                    $scope.threads[index]['fileLoaded'] += e.total;
+
+                    $scope.threads[index]['percent'] = $scope.threads[index]['fileLoaded'] / $scope.threads[index]['fileSize']*100;
+
+                    $scope.$apply();
                     upload_blob(e, index, $scope);
+                } else {
+                    blobUploadEnd(index);
                 }
             } else {
                 alert('读取失败')

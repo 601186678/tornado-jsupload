@@ -16,3 +16,6 @@ nginx_static = 'http://10.211.55.11:80/jsupload'
 
 
 cookie_secret = "61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo="
+
+
+upload_success = set()
