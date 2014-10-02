@@ -149,8 +149,6 @@ angular.module('upload', [])
                 success: function (data) {
 
 
-                    console.log(data);
-
                     if (data['state'] == 'all_success') {
 
 
