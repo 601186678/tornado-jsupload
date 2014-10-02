@@ -3,12 +3,11 @@
 
 
 from library.UrlHelper import *
-from controller.Index import IndexHandler
+from controller.Index import Index
 from urls import upload
 
 url = Urlpattern(
-    (r'/index', IndexHandler),
-
+    (r'/index', Index),
     Url(r'/upload', upload.url)
 )
 

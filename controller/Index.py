@@ -5,7 +5,8 @@ from library.BaseHandler import BaseHandler
 from configs.config import nginx_static
 
 
-class IndexHandler(BaseHandler):
+class Index(BaseHandler):
     def get(self):
-        self.render('index.html', title='Text', body='This is body',nginx_static = nginx_static)
+        thread_count = 5
+        self.render('index.html',nginx_static = nginx_static,thread_count = thread_count)
 

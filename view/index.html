@@ -2,22 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>${title}</title>
+    <title>上传文件</title>
 
     <link rel="stylesheet" href="${nginx_static}/static/style/bootstrap.min.css"/>
+    <link rel="stylesheet" href="${nginx_static}/static/style/commen.css"/>
 
 
 </head>
-<body>
-${body}
+<body ng-app="upload" ng-controller="c_upload">
 
 
-<input id="open_file" type="file"/>
+<div class="well">
 
-<a class="btn btn-primary" href="">123</a>
+</div>
+
+<button id="select_file" class="btn btn-primary">打开文件</button>
+<button id="start_upload" class="btn btn-danger">开始上传</button>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>文件名</th>
+        <th>文件大小</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>{{current_file.name}}</td>
+        <td>{{current_file.size}}</td>
+    </tr>
+    </tbody>
+</table>
+<div>
+
+</div>
+<div class="d-progress">
+
+    <div ng-repeat="thread in threads" style="width: ${100/thread_count}%" class="d-sub-progress">
+        <div style="width: {{thread.percent}}%;" class="d-progress-bar"></div>
+    </div>
+
+
+</div>
+
+<input id="open_file" style="display: none" type="file"/>
+
 </body>
 
 
 <script src="${nginx_static}/static/js/jquery.js"></script>
+<script src="${nginx_static}/static/js/Concurrent.Thread.js"></script>
+
+<script src="${nginx_static}/static/js/angular.min.js"></script>
 <script src="${nginx_static}/static/js/commen.js"></script>
+<script src="${nginx_static}/static/js/jquery.base64.js"></script>
+
 </html>
