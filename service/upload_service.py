@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 import base64
 import os
-from configs.config import upload_success
+from configs import config
 from library import myFunc
 
 
@@ -15,13 +15,7 @@ class Upload_service:
         temp_file_name = myFunc.getRandomStr(40)
         self.handler.set_secure_cookie("temp_file_name", temp_file_name)
         self.handler.set_secure_cookie('fileext', ext)
-        upload_success = set()
-
-        for i in range(0, 5):
-            filePath = os.path.join(myFunc.getUploadPath(), '%s_%s' % (temp_file_name, i))
-            f = open(filePath, 'wb')
-            f.write('')
-            f.close()
+        config.upload_success = set()
 
         return {'state': 'success', 'data': ''}
 
@@ -35,8 +29,9 @@ class Upload_service:
         return {'state': 'success', 'data': ''}
 
     def uploadEnd(self, no):
-        upload_success.add(no)
-        if len(upload_success) == 5:
+        config.upload_success.add(no)
+        if len(config.upload_success) >= 5:
+
             self.mergeFile()
             return {'state': 'success', 'data': 'all_success'}
         else:

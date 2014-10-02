@@ -47,6 +47,12 @@ angular.module('upload', [])
 
         $('#start_upload').click(function () {
 
+
+            if (!$scope.file) {
+
+                alert('请选择文件');
+                return;
+            }
             upload_start();
 //
         });
@@ -63,7 +69,7 @@ angular.module('upload', [])
 
             if ($scope.threads[i]['fileLoaded'] + $scope.block > $scope.threads[i]['fileSize']) {
 
-                range = $scope.threads[i]['fileSize'] - $scope.threads[i]['fileLoaded']-1;
+                range = $scope.threads[i]['fileSize'] - $scope.threads[i]['fileLoaded'] - 1;
             }
 
             if ($scope.file.webkitSlice) {
@@ -144,8 +150,26 @@ angular.module('upload', [])
 
 
                     console.log(data);
+
                     if (data['state'] == 'success' && data['data'] == 'all_success') {
-//                        alert(data['data']);
+
+
+                        alert('success');
+                        $scope.threads = [];
+                        for (var i = 0; i < 5; i++) {
+                            var thread = {};
+                            thread['percent'] = 0;
+
+                            $scope.threads.push(thread);
+                        }
+
+
+                        $scope.file = undefined;
+
+                        $scope.current_file = undefined;
+
+                        $scope.$apply();
+
                     }
                 }
 
